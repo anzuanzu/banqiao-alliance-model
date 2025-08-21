@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>板橋區聯營模版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+            touch-action: manipulation;
+        }
+
+        /* 防止iOS橡皮筋效果 */
+        body {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .main-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* 頂部導航 */
+        .nav-header {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-title {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 漢堡選單按鈕 */
+        .hamburger {
+            display: none;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: #667eea;
+            margin: 5px 0;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* 桌面版導航選單 */
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-item {
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        /* 行動版側邊選單 */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100%;
+            background: white;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu-content {
+            padding: 80px 20px 20px;
+        }
+
+        .mobile-nav-item {
+            display: block;
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: #f5f5f5;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .mobile-nav-item:active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(0.98);
+        }
+
+        /* 遮罩層 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 998;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 主要內容區 */
+        .main-container {
+            max-width: 1400px;
+            margin: 80px auto 50px;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(102,126,234,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .hero-description {
+            font-size: 18px;
+            color: #777;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* 快速導航按鈕組 - 行動版顯示 */
+        .quick-nav {
+            display: none;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .quick-nav-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            font-weight: 600;
+            color: #333;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .quick-nav-btn:active {
+            transform: scale(0.95);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        /* 角色分工 Section */
+        .roles-section {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .role-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .role-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .role-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .role-position {
+            font-size: 16px;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .role-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 核心價值 Section */
+        .values-section {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        /* 可滑動的價值卡片容器 */
+        .values-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .value-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 35px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102,126,234,0.05), rgba(118,75,162,0.05));
+            transition: width 0.3s;
+        }
+
+        .value-card:hover::before {
+            width: 100%;
+        }
+
+        .value-card:hover {
+            border-color: #667eea;
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(102,126,234,0.2);
+        }
+
+        .value-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: white;
+        }
+
+        .value-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .value-description {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* 實施方法 Tabs */
+        .implementation-section {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        /* 可滑動的標籤容器 */
+        .tabs-wrapper {
+            overflow-x: auto;
+            margin-bottom: 40px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .tabs-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            min-width: fit-content;
+            padding: 5px;
+        }
+
+        .tab-button {
+            padding: 12px 30px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .tab-button:hover:not(.active) {
+            background: #e0e0e0;
+        }
+
+        .tab-button:active {
+            transform: scale(0.95);
+        }
+
+        /* 可滑動的內容區域 */
+        .tab-content-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-content-container {
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+
+        .tab-content {
+            min-width: 100%;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tab-content.active {
+            opacity: 1;
+        }
+
+        .implementation-grid {
+            display: grid;
+            gap: 25px;
+        }
+
+        .implementation-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .implementation-item:hover {
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transform: translateX(10px);
+        }
+
+        .implementation-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .implementation-content {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .implementation-list {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .implementation-list li {
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        /* 狀態標籤 */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-planning {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        /* 底部快速導航 - 行動版 */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.1);
+            z-index: 900;
+        }
+
+        .bottom-nav-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+        }
+
+        .bottom-nav-item:active {
+            transform: scale(0.9);
+        }
+
+        .bottom-nav-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+            background: #999;
+            border-radius: 5px;
+        }
+
+        .bottom-nav-item.active .bottom-nav-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .bottom-nav-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .bottom-nav-item.active .bottom-nav-label {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* 響應式設計 - 平板 */
+        @media (max-width: 1024px) {
+            .values-container {
+                grid-template-columns: 1fr;
+            }
+
+            .roles-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        /* 響應式設計 - 手機 */
+        @media (max-width: 768px) {
+            body {
+                position: relative;
+                height: auto;
+                overflow: auto;
+            }
+
+            .main-wrapper {
+                position: relative;
+                overflow-y: visible;
+            }
+
+            .nav-header {
+                padding: 12px 0;
+            }
+
+            .nav-title {
+                font-size: 20px;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .main-container {
+                margin-top: 70px;
+                margin-bottom: 80px;
+                padding: 0 15px;
+            }
+
+            .hero-section {
+                padding: 30px 20px;
+                border-radius: 15px;
+            }
+
+            .hero-title {
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+
+            .hero-description {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+
+            .quick-nav {
+                display: grid;
+            }
+
+            .section-title {
+                font-size: 28px;
+                margin-bottom: 30px;
+            }
+
+            .roles-section,
+            .values-section,
+            .implementation-section {
+                padding: 30px 20px;
+                border-radius: 15px;
+                margin-bottom: 30px;
+            }
+
+            .roles-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .role-card {
+                padding: 25px;
+            }
+
+            .role-card:hover {
+                transform: none;
+            }
+
+            .role-card:active {
+                transform: scale(0.98);
+                background: linear-gradient(135deg, #e5e7ea 0%, #b3bfc2 100%);
+            }
+
+            /* 行動版價值卡片可橫向滑動 */
+            .values-container {
+                display: flex;
+                overflow-x: auto;
+                gap: 20px;
+                padding: 10px 0;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .values-container::-webkit-scrollbar {
+                display: none;
+            }
+
+            .value-card {
+                min-width: 280px;
+                padding: 25px;
+            }
+
+            .value-card:hover {
+                transform: none;
+            }
+
+            .value-card:active {
+                transform: scale(0.98);
+                border-color: #667eea;
+                background: #f8f9ff;
+            }
+
+            .value-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+
+            .value-title {
+                font-size: 20px;
+            }
+
+            .value-description {
+                font-size: 14px;
+            }
+
+            /* 標籤滾動提示 */
+            .tabs-wrapper {
+                position: relative;
+                margin-bottom: 30px;
+            }
+
+            .tabs-wrapper::after {
+                content: '←滑動→';
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 12px;
+                color: #999;
+                pointer-events: none;
+            }
+
+            .tabs-container {
+                justify-content: flex-start;
+                padding: 5px 40px 5px 5px;
+            }
+
+            .tab-button {
+                padding: 10px 20px;
+                font-size: 14px;
+                min-width: 100px;
+            }
+
+            .implementation-item {
+                padding: 20px;
+            }
+
+            .implementation-item:hover {
+                transform: none;
+            }
+
+            .implementation-item:active {
+                background: white;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            }
+
+            .implementation-title {
+                font-size: 16px;
+            }
+
+            .implementation-content {
+                font-size: 14px;
+            }
+
+            /* 顯示底部導航 */
+            .bottom-nav {
+                display: block;
+            }
+        }
+
+        /* 加載動畫 */
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 觸控優化 */
+        @media (hover: none) {
+            .role-card:hover,
+            .value-card:hover,
+            .implementation-item:hover {
+                transform: none;
+            }
+        }
+
+        /* 滑動指示器 */
+        .swipe-indicator {
+            display: none;
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .swipe-indicator {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- 導航欄 -->
+        <header class="nav-header">
+            <div class="nav-container">
+                <div class="nav-title">板橋區聯營模版</div>
+                <nav class="nav-menu">
+                    <div class="nav-item" onclick="scrollToSection('hero')">總覽</div>
+                    <div class="nav-item" onclick="scrollToSection('roles')">角色分工</div>
+                    <div class="nav-item" onclick="scrollToSection('values')">核心價值</div>
+                    <div class="nav-item" onclick="scrollToSection('implementation')">實施方法</div>
+                </nav>
+                <!-- 漢堡選單 -->
+                <div class="hamburger" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 行動版側邊選單 -->
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-content">
+                <a class="mobile-nav-item" onclick="mobileNavigate('hero')">📋 總覽</a>
+                <a class="mobile-nav-item" onclick="mobileNavigate('roles')">👥 角色分工</a>
+                <a class="mobile-nav-item" onclick="mobileNavigate('values')">💎 核心價值</a>
+                <a class="mobile-nav-item" onclick="mobileNavigate('implementation')">🚀 實施方法</a>
+            </div>
+        </div>
+
+        <!-- 遮罩層 -->
+        <div class="overlay" id="overlay" onclick="toggleMobileMenu()"></div>
+
+        <div class="main-container">
+            <!-- Hero Section -->
+            <section id="hero" class="hero-section fade-in">
+                <h1 class="hero-title">板橋區聯營模版</h1>
+                <h2 class="hero-subtitle">建立可複製的聯營運作模式</h2>
+                <p class="hero-description">
+                    透過系統化的角色分工、明確的核心價值與落地執行方案，打造高效能的跨分行聯營機制。
+                    實現績效共背、資源輪轉、共用資源與人才培育的四大核心目標，提升整體營運效能。
+                </p>
+                <!-- 行動版快速導航 -->
+                <div class="quick-nav">
+                    <button class="quick-nav-btn" onclick="scrollToSection('roles')">👥 角色分工</button>
+                    <button class="quick-nav-btn" onclick="scrollToSection('values')">💎 核心價值</button>
+                    <button class="quick-nav-btn" onclick="scrollToSection('implementation')">🚀 實施方法</button>
+                    <button class="quick-nav-btn" onclick="scrollToSection('contact')">📞 聯絡我們</button>
+                </div>
+                <div class="swipe-indicator">← 左右滑動查看更多 →</div>
+            </section>
+
+            <!-- 角色分工 Section -->
+            <section id="roles" class="roles-section fade-in">
+                <h2 class="section-title">角色分工</h2>
+                <div class="roles-grid">
+                    <div class="role-card">
+                        <div class="role-name">宗翰協理</div>
+                        <div class="role-position">板橋分行 - 聯營總指揮</div>
+                        <div class="role-description">
+                            負責聯營各個角色責任分派，監督聯營各項業務運作模式，擔任整體聯營機制的總指揮官。
+                        </div>
+                    </div>
+                    <div class="role-card">
+                        <div class="role-name">岸儒協理</div>
+                        <div class="role-position">新板分行 - 財管專業角色</div>
+                        <div class="role-description">
+                            負責聯營分行財管進度追蹤，協助財管進度落後分行提供建議與協助調整。
+                        </div>
+                    </div>
+                    <div class="role-card">
+                        <div class="role-name">文賢協理</div>
+                        <div class="role-position">華江分行 - 放款專業角色</div>
+                        <div class="role-description">
+                            負責聯營分行放款進度管理，協助放款進度落後分行的建議與協助調整。
+                        </div>
+                    </div>
+                    <div class="role-card">
+                        <div class="role-name">澤安 SFA</div>
+                        <div class="role-position">協理人才培育</div>
+                        <div class="role-description">
+                            負責板橋分行財管放款的業務運作，協助培育未來管理人才。
+                        </div>
+                    </div>
+                    <div class="role-card">
+                        <div class="role-name">張弘/恒瑞 SFA</div>
+                        <div class="role-position">財管輔銷支援</div>
+                        <div class="role-description">
+                            提供三家聯營分行財管輔銷支援，負責中小理專的教育訓練。
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 核心價值 Section -->
+            <section id="values" class="values-section fade-in">
+                <h2 class="section-title">四大核心價值</h2>
+                <div class="values-container">
+                    <div class="value-card">
+                        <div class="value-icon">📊</div>
+                        <div class="value-title">績效共背</div>
+                        <div class="value-description">
+                            節奏一致，透過聯營機制各角色的協助，讓落後分行績效能夠即時跟上，確保整體目標達成。
+                        </div>
+                    </div>
+                    <div class="value-card">
+                        <div class="value-icon">🔄</div>
+                        <div class="value-title">資源輪轉</div>
+                        <div class="value-description">
+                            客戶資源跨分行開發，提升閒置客戶資源的開發效率，最大化資源利用價值。
+                        </div>
+                    </div>
+                    <div class="value-card">
+                        <div class="value-icon">🤝</div>
+                        <div class="value-title">共用資源</div>
+                        <div class="value-description">
+                            聯營區域內OP人力調度、跨分行業務洽談，打破分行地域限制，擴大客戶服務範圍。
+                        </div>
+                    </div>
+                    <div class="value-card">
+                        <div class="value-icon">🎯</div>
+                        <div class="value-title">人才培育</div>
+                        <div class="value-description">
+                            聯營分行培育的業務人才可視狀況進行分行間調度，平衡分行戰力，建立人才梯隊。
+                        </div>
+                    </div>
